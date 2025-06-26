@@ -1,33 +1,70 @@
-#include <iostream>		// input/output
+#include <iostream>		// input/output (cin/cout)
 //#include <fstream>	// external files support
 //#include <string>		// string variable support
-//#include <vector>		// vector variable support
+#include <vector>		// vector variable support (Database)
 //#include <map>		// map variable support
 //#include <thread>		// thread variable support
 //#include <mutex>		// mutex - constrainst
 //#include <future>		// future - asynchronus programing
-#include <Windows.h>	// acceses Windows API
-#include <cstdlib>		// several general purpose functions
+#include <Windows.h>	// acceses Windows API (menuing)
+#include <cstdlib>		// several general purpose functions (menuing)
 using namespace std;	// removes the requairement for "std::" clutter
+
+#include "Book.h";
+#include "Database.h";
 
 int OpeningMenu();
 int UserMenu();
 int AdminMenu();
 
+// main - test your might for template how to use method in other method
+
 int main()
 {
+    /* TESTING BOOK.H
+    Book* book1 = new Book();   // default constructor
+    cout << book1->getCode() << book1->getState() << book1->getName() << book1->getAuthor() << endl;
+
+    Book* book2 = new Book("0001", "Opowiesc Wigilijna", "Dickens");
+    cout << book2->getCode() << book2->getState() << book2->getName() << book2->getAuthor() << endl;
+    book2->getAll();
+
+    delete book1;   // default destructor
+    */
+
+    //Simulating books - idealy I would store them in a .txt to have a memory but whatever
+    Database* database = new Database();    // start by creating a database
+    
+    Book* book0 = new Book();   // construct book
+    database->add(book0);   // add book to database, could be done cleaner but whatever
+    Book* book1 = new Book("01", "The Unified Modeling Language User Guide", "Booch G., Rumbaugh J., Jacobson I.");
+    database->add(book1);
+    Book* book2 = new Book("02", "Design Patterns: Elements of Reusable Object-Oriented Software", "Gamma E., Helms R., Johnson R., Vlissides J.");
+    database->add(book2);
+    Book* book3 = new Book("03", "Testing object-oriented systems", "Binder R.");
+    database->add(book3);
+    Book* book4 = new Book("04", "Professional C++, Third Edition", "Gregoire M.");
+    database->add(book4);
+    book4->updateState(0);
+    
+    //database->getAll();   // test
+    //delete database;
+    
+    // Program proper
     int accesType = 0;  // defines acces type chosen in OpeningMenu
     int adminPassword = 1234;   // set administration acces password
     int in_adminPassword = 0;   // input varaivle for administration acces password
     int adminActivity = 0;  // defines activity chosen in AdminMenu
-    int userActivity = 0;
+    int userActivity = 0;  // defines activity chosen in UserMenu
 
     accesType = OpeningMenu();  // the function working the opening menu
 
     if (accesType == 1) // GUEST acces
     {
-        cout << "Welcome guest" << endl;
-        cout << "Go to database - PLACEHOLDER" << endl;
+        cout << "Welcome guest!" << endl;
+        //cout << "Go to database - PLACEHOLDER" << endl;
+        database->getAll();   // test
+        //delete database;
     }
     else if (accesType == 2) // USER acces
     {
@@ -71,6 +108,7 @@ int main()
         cout << "Huh?";
     }
 
+
     return 0;
 }
 
@@ -80,6 +118,7 @@ int OpeningMenu()
     int accesType = 0;
 
     // Start menu
+    system("cls"); // resets the screen
     cout << "Library:" << endl << "[>] Guest" << endl << "[ ] User" << endl << "[ ] Administrator" << endl;
     while (menuState < 3)
     {
