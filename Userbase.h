@@ -10,27 +10,22 @@ using namespace std; // saves the "std::" clutter
 #include "Book.h"
 #include "Account.h"
 
-class Database : public Book	// Composite Pattern
+class Userbase : public Account	// Composite Pattern
 {
 private:
-	vector<Book*> Books;
 	vector<Account*> Accounts;
 
 public:
-	void add(Book* in_Book);
+	void addAccount(Account* in_Account);
 
-	void getAll() override;
+	bool loginAccount(string in_username, string in_password);
 
-	void updateState(string in_code) override;
+	void borrowBook_A(string in_borrowCode, string in_username);
 
-	void borrowBook_B(string in_code);
+	void getHistory();
 
-	~Database()	// should be in .cpp but for some reason just doesn't want to connect :)
+	~Userbase()	// should be in .cpp but for some reason just doesn't want to connect :)
 	{
-		for (auto B : Books)
-		{
-			delete B;
-		}
 		for (auto A : Accounts)
 		{
 			delete A;

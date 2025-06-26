@@ -34,6 +34,17 @@ void Database::getAll()
 	}
 };
 
+void Database::borrowBook_B(string in_code)
+{
+	for (auto B : Books)
+	{
+		if (B->getCode() == in_code)
+		{
+			B->updateState("does not matter");
+		}
+	}
+};
+
 void Database::updateState(string in_code)
 {
 	for (auto B : Books)

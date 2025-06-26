@@ -127,13 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Account.cpp" />
     <ClCompile Include="Book.cpp" />
     <ClCompile Include="Database.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Userbase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Account.h" />
     <ClInclude Include="Book.h" />
     <ClInclude Include="Database.h" />
+    <ClInclude Include="Userbase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

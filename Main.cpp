@@ -1,8 +1,8 @@
 #include <iostream>		// input/output (cin/cout)
 //#include <fstream>	// external files support
-//#include <string>		// string variable support
-#include <vector>		// vector variable support (Database)
-//#include <map>		// map variable support
+#include <string>		// string variable support (database)
+#include <vector>		// vector support (Database)
+#include <map>		    // map  support (logins)
 //#include <thread>		// thread variable support
 //#include <mutex>		// mutex - constrainst
 //#include <future>		// future - asynchronus programing
@@ -12,6 +12,8 @@ using namespace std;	// removes the requairement for "std::" clutter
 
 #include "Book.h";
 #include "Database.h";
+#include "Account.h";
+#include "Userbase.h";
 
 int OpeningMenu();
 int UserMenu();
@@ -34,6 +36,7 @@ int main()
 
     //Simulating books - idealy I would store them in a .txt to have a memory but whatever
     Database* database = new Database();    // start by creating a database
+    Userbase* userbase = new Userbase();
     
     Book* book0 = new Book();   // construct book
     database->add(book0);   // add book to database, could be done cleaner but whatever
@@ -49,6 +52,8 @@ int main()
     
     //database->getAll();   // test
     //delete database;
+
+    // Accounts Map
     
     // Program proper
     int accesType = 0;  // defines acces type chosen in OpeningMenu
@@ -57,6 +62,7 @@ int main()
     int adminActivity = 0;  // defines activity chosen in AdminMenu
     int userActivity = 0;  // defines activity chosen in UserMenu
     string in_exit;
+    string in_borrowCode;
 
     while (true)    // looping so you can ~log out
     {
@@ -88,13 +94,75 @@ int main()
 
             if (userActivity == 1)
             {
-                cout << "Sign in - PLACEHOLDER" << endl;
-                break;
+                cout << "Log into account - PLACEHOLDER" << endl;
+
+                cout << "Please enter your username: ";
+                string in_username;
+                cin >> in_username;
+                cout << "Please enter your password: ";
+                string in_password;
+                cin >> in_password;
+
+                //userbase->loginAccount(in_username, in_password);
+
+                if (userbase->loginAccount(in_username, in_password) == true)
+                {
+                    cout << "Welcome User!";
+                    database->getAll();
+                    
+                    // Borrowing
+                    cout << endl << "If you wish to borrow a book, write its code. If you want to return to main manu, write anything (exept exit)." << endl;
+                    cin >> in_borrowCode;
+                    database->borrowBook_B(in_borrowCode);
+                    userbase->borrowBook_A(in_borrowCode, in_username);
+
+                }
+                else
+                {
+                    cout << "Wrong password, calling police :)" << endl;
+                    Sleep(1000);
+                    break;
+                }
+
+                // What is worse, a function using goto ripping the program back to start or another layer of if's?
+                cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (exept exit)." << endl;
+                cin >> in_exit;
+                string exit = "exit";   // This if is an atrocity
+                if (in_exit == exit)
+                {
+                    break;
+                }
+                else
+                {
+                    Sleep(100);
+                }
             }
             else if (userActivity == 2)
             {
-                cout << "Create account - PLACEHOLDER" << endl;
-                break;
+                cout << "Please enter your username: ";
+                string in_username;
+                cin >> in_username;
+                cout << "Please enter your password: ";
+                string in_password;
+                cin >> in_password;
+
+                Account* newAccount = new Account(in_username, in_password);    // start by creating a database
+                userbase->addAccount(newAccount);
+                //cout << newAccount->getLogin() << " " << newAccount->getPassword(); // test
+                cout << "Account created succesfully:" << endl << "Login: " << newAccount->getLogin() << endl << "Password: " << newAccount->getPassword();
+
+                // What is worse, a function using goto ripping the program back to start or another layer of if's?
+                cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (exept exit)." << endl;
+                cin >> in_exit;
+                string exit = "exit";   // This if is an atrocity
+                if (in_exit == exit)
+                {
+                    break;
+                }
+                else
+                {
+                    Sleep(100);
+                }
             }
         }
         else if (accesType == 3) // ADMIN acces
@@ -110,7 +178,7 @@ int main()
                     if (adminActivity == 1)
                     {
                         cout << "Borrowing history - database as PLACEHOLDER" << endl;  // it'll be the same but with diffrent database?
-                        database->getAll();
+                        userbase->getHistory();
                         Sleep(2000);
                         break;
                     }
@@ -142,6 +210,7 @@ int main()
             else
             {
                 cout << "Wrong password, calling police :)" << endl;
+                Sleep(1000);
                 break;
             }
         }
