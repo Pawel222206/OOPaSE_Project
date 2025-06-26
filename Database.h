@@ -19,6 +19,8 @@ public:
 
 	void getAll() override;
 
+	void updateState(string in_code) override;
+
 	~Database()	// should be in .cpp but for some reason just doesn't want to connect :)
 	{
 		for (auto B : Books)

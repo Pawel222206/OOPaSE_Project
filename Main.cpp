@@ -45,7 +45,7 @@ int main()
     database->add(book3);
     Book* book4 = new Book("04", "Professional C++, Third Edition", "Gregoire M.");
     database->add(book4);
-    book4->updateState(0);
+    book4->updateState("04");
     
     //database->getAll();   // test
     //delete database;
@@ -56,58 +56,102 @@ int main()
     int in_adminPassword = 0;   // input varaivle for administration acces password
     int adminActivity = 0;  // defines activity chosen in AdminMenu
     int userActivity = 0;  // defines activity chosen in UserMenu
+    string in_exit;
 
-    accesType = OpeningMenu();  // the function working the opening menu
-
-    if (accesType == 1) // GUEST acces
+    while (true)    // looping so you can ~log out
     {
-        cout << "Welcome guest!" << endl;
-        //cout << "Go to database - PLACEHOLDER" << endl;
-        database->getAll();   // test
-        //delete database;
-    }
-    else if (accesType == 2) // USER acces
-    {
-        cout << "Welcome user" << endl;
-        userActivity = UserMenu();
 
-        if (userActivity == 1)
-        {
-            cout << "Sign in - PLACEHOLDER" << endl;
-        }
-        else if (userActivity == 2)
-        {
-            cout << "Create account - PLACEHOLDER" << endl;
-        }
-    }
-    else if (accesType == 3) // ADMIN acces
-    {
-        cout << "Please provide admin password" << endl;
-        cin >> in_adminPassword;
-        if (in_adminPassword == adminPassword)
-        {
-            cout << "Welcome admin";
-            adminActivity = AdminMenu();
+        accesType = OpeningMenu();  // the function working the opening menu
 
-            if (adminActivity == 1)
+        if (accesType == 1) // GUEST acces
+        {
+            cout << "Welcome guest!" << endl;
+            database->getAll();
+
+            // What is worse, a function using goto ripping the program back to start or another layer of if's?
+            cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (exept exit)." << endl;
+            cin >> in_exit;
+            string exit = "exit";   // This if is an atrocity
+            if (in_exit == exit)
             {
-                cout << "Borrowing history - PLACEHOLDER" << endl;
+                break;
             }
-            else if (adminActivity == 2)
+            else
             {
-                cout << "Book's state manager - PLACEHOLDER" << endl;
+                Sleep(100);
+            }
+        }
+        else if (accesType == 2) // USER acces
+        {
+            cout << "Welcome user" << endl;
+            userActivity = UserMenu();
+
+            if (userActivity == 1)
+            {
+                cout << "Sign in - PLACEHOLDER" << endl;
+                break;
+            }
+            else if (userActivity == 2)
+            {
+                cout << "Create account - PLACEHOLDER" << endl;
+                break;
+            }
+        }
+        else if (accesType == 3) // ADMIN acces
+        {
+            cout << "Welcome admin!" << endl << "Please provide password: ";
+            cin >> in_adminPassword;
+            if (in_adminPassword == adminPassword)
+            {
+                while (true)    // looping so you can ~log out
+                {
+                    adminActivity = AdminMenu();
+
+                    if (adminActivity == 1)
+                    {
+                        cout << "Borrowing history - database as PLACEHOLDER" << endl;  // it'll be the same but with diffrent database?
+                        database->getAll();
+                        Sleep(2000);
+                        break;
+                    }
+                    else if (adminActivity == 2)
+                    {
+                        cout << "Book's state manager" << endl;
+                        database->getAll();
+
+                        cout << "To change state of the book simply enter it's code: " << endl;
+                        string in_code;
+                        cin >> in_code;
+                        database->updateState(in_code);
+
+                        // What is worse, a function using goto ripping the program back to start or another layer of if's?
+                        cout << endl << "If you wish to go back to main menu, write exit. If you want to return to admin menu, write anything (exept exit)." << endl;
+                        cin >> in_exit;
+                        string exit = "exit";   // This if is an atrocity
+                        if (in_exit == exit)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            Sleep(100);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                cout << "Wrong password, calling police :)" << endl;
+                break;
             }
         }
         else
         {
-            cout << "Wrong admin password" << endl;
+            cout << "Huh?";
+            break;
         }
-    }
-    else
-    {
-        cout << "Huh?";
-    }
 
+    }
 
     return 0;
 }
@@ -164,7 +208,7 @@ int OpeningMenu()
         }
 
         // Actions
-        if (GetAsyncKeyState(VK_RETURN)) {
+        if (GetAsyncKeyState(VK_RIGHT)) {
             switch (menuState) {
             case 0: // Guest acces
                 menuState = 3;  // will stop the menu loop after completing this instruction

@@ -10,7 +10,7 @@ using namespace std; // saves the "std::" clutter
 class Book
 {
 private:    // all members are private
-    int state;  // 0 - nope, 1 - available
+    int state;  // 0 - nope, 1 - available, !switch it to bool later!
     string code, name, author;
 
 public: // all methods are set as private for now
@@ -35,7 +35,7 @@ public: // all methods are set as private for now
     string getAuthor() { return author; };
     virtual void getAll() { cout << code << "; " << name << "; " << author << ";" << endl; };
 
-    void updateState(int in_state);
+    virtual void updateState(string in_code);
 
     ~Book();
 };

@@ -7,11 +7,23 @@ using namespace std; // saves the "std::" clutter
 
 #include "book.h"
 
-void Book::updateState(int in_state)
+void Book::updateState(string in_code)
 {
-    cout << code << " book's state updated from: " << state;
-    state = in_state;
-    cout << ", to: " << state << endl;
+    //cout << code << " book's state updated from: " << state;
+    //state = 1;
+    ////state = in_state;
+    //cout << ", to: " << state << endl;
+
+    if (state == 0)
+    {
+        state = 1;
+        cout << "state was changed from 0 to 1." << endl;
+    }
+    else
+    {
+        state = 0;
+        cout << "state was changed from 1 to 0." << endl;
+    }
 }
 
 Book::~Book()

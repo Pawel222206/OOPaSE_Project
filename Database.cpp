@@ -1,7 +1,7 @@
 #include <iostream>  // input/output
 //#include <fstream>   // external files support
 #include <string>   // string variable support
-//#include <vector>    // vector
+#include <vector>    // vector
 //#include <map>       // map
 using namespace std; // saves the "std::" clutter
 
@@ -30,6 +30,18 @@ void Database::getAll()
 		if (B->getState() == 0)
 		{
 			B->getAll();
+		}
+	}
+};
+
+void Database::updateState(string in_code)
+{
+	for (auto B : Books)
+	{
+		if (B->getCode() == in_code)
+		{
+			cout << "For the book " << in_code << ", the ";
+			B->updateState(in_code);
 		}
 	}
 };
