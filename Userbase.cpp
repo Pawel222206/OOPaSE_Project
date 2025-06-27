@@ -1,15 +1,14 @@
-#include <iostream>  // input/output
-//#include <fstream>   // external files support
-#include <string>   // string variable support
-#include <vector>    // vector
-//#include <map>       // map
-using namespace std; // saves the "std::" clutter
+#include <iostream>		// input/output
+#include <string>		// string variable support
+#include <vector>		// vector support
+#include <Windows.h>	// acceses Windows API
+#include <cstdlib>		// several general purpose functions
+using namespace std;	// removes the requairement for "std::" clutter
 
 #include "Userbase.h"
 
 void Userbase::addAccount(Account* in_Account)
 {
-	//cout << "Added" << endl; // test
 	Accounts.push_back(in_Account);
 }
 
@@ -22,21 +21,13 @@ bool Userbase::loginAccount(string in_username, string in_password)
 			cout << "Login good" << endl;
 			if (A->getPassword() == in_password)
 			{
-				cout << "Password good" << endl;
+				cout << "You have borrowed" << endl;
 				return true;
 			}
-			else
-			{
-				cout << "Password bad" << endl;
-				return false;
-			}
-		}
-		else
-		{
-			cout << "Login bad" << endl;
-			return false;
 		}
 	}
+	cout << "Login or password bad" << endl;
+	return false;
 }
 
 void Userbase::borrowBook_A(string in_borrowCode, string in_username)
@@ -46,10 +37,6 @@ void Userbase::borrowBook_A(string in_borrowCode, string in_username)
 		if (A->getLogin() == in_username)
 		{
 			A->updateHistory(in_borrowCode);
-		}
-		else
-		{
-			cout << "Error" << endl;
 		}
 	}
 };

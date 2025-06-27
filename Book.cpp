@@ -1,19 +1,14 @@
-#include <iostream>  // input/output
-//#include <fstream>   // external files support
-#include <string>   // string variable support
-//#include <vector>    // vector
-//#include <map>       // map
-using namespace std; // saves the "std::" clutter
+#include <iostream>		// input/output
+#include <string>		// string variable support
+#include <vector>		// vector support
+#include <Windows.h>	// acceses Windows API
+#include <cstdlib>		// several general purpose functions
+using namespace std;	// removes the requairement for "std::" clutter
 
 #include "book.h"
 
 void Book::updateState(string in_code)
 {
-    //cout << code << " book's state updated from: " << state;
-    //state = 1;
-    ////state = in_state;
-    //cout << ", to: " << state << endl;
-
     if (state == 0)
     {
         state = 1;

@@ -1,13 +1,8 @@
-#include <iostream>		// input/output (cin/cout)
-//#include <fstream>	// external files support
-#include <string>		// string variable support (database)
-#include <vector>		// vector support (Database)
-#include <map>		    // map  support (logins)
-//#include <thread>		// thread variable support
-//#include <mutex>		// mutex - constrainst
-//#include <future>		// future - asynchronus programing
-#include <Windows.h>	// acceses Windows API (menuing)
-#include <cstdlib>		// several general purpose functions (menuing)
+#include <iostream>		// input/output
+#include <string>		// string variable support
+#include <vector>		// vector support
+#include <Windows.h>	// acceses Windows API
+#include <cstdlib>		// several general purpose functions
 using namespace std;	// removes the requairement for "std::" clutter
 
 #include "Book.h";
@@ -19,27 +14,9 @@ int OpeningMenu();
 int UserMenu();
 int AdminMenu();
 
-// main - test your might for template how to use method in other method
-
 int main()
 {
-    /* TESTING BOOK.H
-    Book* book1 = new Book();   // default constructor
-    cout << book1->getCode() << book1->getState() << book1->getName() << book1->getAuthor() << endl;
-
-    Book* book2 = new Book("0001", "Opowiesc Wigilijna", "Dickens");
-    cout << book2->getCode() << book2->getState() << book2->getName() << book2->getAuthor() << endl;
-    book2->getAll();
-
-    delete book1;   // default destructor
-    */
-
-    //Simulating books - idealy I would store them in a .txt to have a memory but whatever
-    Database* database = new Database();    // start by creating a database
-    Userbase* userbase = new Userbase();
-    
-    Book* book0 = new Book();   // construct book
-    database->add(book0);   // add book to database, could be done cleaner but whatever
+    Database* database = new Database();    // setting up the Book Database
     Book* book1 = new Book("01", "The Unified Modeling Language User Guide", "Booch G., Rumbaugh J., Jacobson I.");
     database->add(book1);
     Book* book2 = new Book("02", "Design Patterns: Elements of Reusable Object-Oriented Software", "Gamma E., Helms R., Johnson R., Vlissides J.");
@@ -48,54 +25,45 @@ int main()
     database->add(book3);
     Book* book4 = new Book("04", "Professional C++, Third Edition", "Gregoire M.");
     database->add(book4);
-    book4->updateState("04");
-    
-    //database->getAll();   // test
-    //delete database;
 
-    // Accounts Map
+    Userbase* userbase = new Userbase();    // setting up the User Accounts
+    Account* account1 = new Account("Pawel", "123");
+    userbase->addAccount(account1);
+    Account* account2 = new Account("Asia", "kot321");
+    userbase->addAccount(account2);
     
     // Program proper
-    int accesType = 0;  // defines acces type chosen in OpeningMenu
-    int adminPassword = 1234;   // set administration acces password
-    int in_adminPassword = 0;   // input varaivle for administration acces password
+    int adminPassword = 1234;   // set administration access password
+    int in_adminPassword = 0;   // input varaivle for administration access password
     int adminActivity = 0;  // defines activity chosen in AdminMenu
-    int userActivity = 0;  // defines activity chosen in UserMenu
+
     string in_exit;
     string in_borrowCode;
 
-    while (true)    // looping so you can ~log out
+    while (true)    // Looping of the whole program
     {
+        int accessType = OpeningMenu();  // Main menu
 
-        accesType = OpeningMenu();  // the function working the opening menu
-
-        if (accesType == 1) // GUEST acces
+        if (accessType == 1) // GUEST access
         {
-            cout << "Welcome guest!" << endl;
-            database->getAll();
+            cout << "Welcome guest!" << endl << endl;
 
-            // What is worse, a function using goto ripping the program back to start or another layer of if's?
-            cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (exept exit)." << endl;
-            cin >> in_exit;
-            string exit = "exit";   // This if is an atrocity
-            if (in_exit == exit)
-            {
-                break;
-            }
-            else
-            {
-                Sleep(100);
-            }
+            database->getAll(); // Provides a full catalogue of books in the library
+
+            // exit - This should be a function ...but breaking loop from inside is easy
+            cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (except exit)." << endl;
+            cin >> in_exit; string exit = "exit";
+            if (in_exit == exit) { break; }
+            else { Sleep(100); }    // sleep needed so we don't go throu several menues with a single input
         }
-        else if (accesType == 2) // USER acces
+        else if (accessType == 2) // USER access
         {
-            cout << "Welcome user" << endl;
-            userActivity = UserMenu();
+            cout << "Welcome patron!" << endl << endl;
 
-            if (userActivity == 1)
+            int userActivity = UserMenu();  // User menu
+            if (userActivity == 1)  // Logging in
             {
-                cout << "Log into account - PLACEHOLDER" << endl;
-
+                cout << "Logging in:" << endl; // taking username and password as input from user
                 cout << "Please enter your username: ";
                 string in_username;
                 cin >> in_username;
@@ -103,42 +71,28 @@ int main()
                 string in_password;
                 cin >> in_password;
 
-                //userbase->loginAccount(in_username, in_password);
-
-                if (userbase->loginAccount(in_username, in_password) == true)
+                if (userbase->loginAccount(in_username, in_password) == true)   // checking if the logging attempt was succesfull (also porvides user's borrowing history)
                 {
-                    cout << "Welcome User!";
                     database->getAll();
                     
-                    // Borrowing
-                    cout << endl << "If you wish to borrow a book, write its code. If you want to return to main manu, write anything (exept exit)." << endl;
-                    cin >> in_borrowCode;
-                    database->borrowBook_B(in_borrowCode);
-                    userbase->borrowBook_A(in_borrowCode, in_username);
+                    while (true)    // looping, to allow for a log out
+                    {
+                        cout << endl << "If you wish to borrow a book, write its code." << endl;
+                        cin >> in_borrowCode;
+                        database->borrowBook_B(in_borrowCode);
+                        userbase->borrowBook_A(in_borrowCode, in_username);
 
-                }
-                else
-                {
-                    cout << "Wrong password, calling police :)" << endl;
-                    Sleep(1000);
-                    break;
-                }
-
-                // What is worse, a function using goto ripping the program back to start or another layer of if's?
-                cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (exept exit)." << endl;
-                cin >> in_exit;
-                string exit = "exit";   // This if is an atrocity
-                if (in_exit == exit)
-                {
-                    break;
-                }
-                else
-                {
-                    Sleep(100);
+                        // log out
+                        cout << endl << "If you wish to go back to main menu, write exit. If you want to borrow another book, write anything (except exit)." << endl;
+                        cin >> in_exit; string exit = "exit";
+                        if (in_exit == exit) { break; }
+                        else { Sleep(100); }
+                    }
                 }
             }
-            else if (userActivity == 2)
+            else if (userActivity == 2) // Registering
             {
+                cout << "Sign in:" << endl; // taking username and password as input from user
                 cout << "Please enter your username: ";
                 string in_username;
                 cin >> in_username;
@@ -146,43 +100,38 @@ int main()
                 string in_password;
                 cin >> in_password;
 
-                Account* newAccount = new Account(in_username, in_password);    // start by creating a database
+                Account* newAccount = new Account(in_username, in_password);    // creating the account
                 userbase->addAccount(newAccount);
-                //cout << newAccount->getLogin() << " " << newAccount->getPassword(); // test
-                cout << "Account created succesfully:" << endl << "Login: " << newAccount->getLogin() << endl << "Password: " << newAccount->getPassword();
 
-                // What is worse, a function using goto ripping the program back to start or another layer of if's?
-                cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (exept exit)." << endl;
-                cin >> in_exit;
-                string exit = "exit";   // This if is an atrocity
-                if (in_exit == exit)
-                {
-                    break;
-                }
-                else
-                {
-                    Sleep(100);
-                }
+                cout << "Account created succesfully" << endl << "Login: " << newAccount->getLogin() << endl << "Password: " << newAccount->getPassword();
+
+                // exit
+                cout << endl << "If you wish to close the program, write exit. If you want to return to main manu, write anything (except exit)." << endl;
+                cin >> in_exit; string exit = "exit";
+                if (in_exit == exit) { break; }
+                else { Sleep(100); }
             }
         }
-        else if (accesType == 3) // ADMIN acces
+        else if (accessType == 3) // ADMIN access
         {
-            cout << "Welcome admin!" << endl << "Please provide password: ";
+            cout << "Welcome Librarian!" << endl << endl << "Please provide password: ";
             cin >> in_adminPassword;
             if (in_adminPassword == adminPassword)
             {
-                while (true)    // looping so you can ~log out
+                while (true)    // looping, to allow for a log out
                 {
-                    adminActivity = AdminMenu();
-
-                    if (adminActivity == 1)
+                    adminActivity = AdminMenu();    // Admin menu
+                    if (adminActivity == 1) // Borrowing history
                     {
-                        cout << "Borrowing history - database as PLACEHOLDER" << endl;  // it'll be the same but with diffrent database?
                         userbase->getHistory();
-                        Sleep(2000);
-                        break;
+
+                        // log out
+                        cout << endl << "If you wish to go back to main menu, write exit. If you want to return to admin menu, write anything (exept exit)." << endl;
+                        cin >> in_exit; string exit = "exit";
+                        if (in_exit == exit) { break; }
+                        else { Sleep(100); }
                     }
-                    else if (adminActivity == 2)
+                    else if (adminActivity == 2)    // Book's state manager
                     {
                         cout << "Book's state manager" << endl;
                         database->getAll();
@@ -192,45 +141,36 @@ int main()
                         cin >> in_code;
                         database->updateState(in_code);
 
-                        // What is worse, a function using goto ripping the program back to start or another layer of if's?
+                        // log out
                         cout << endl << "If you wish to go back to main menu, write exit. If you want to return to admin menu, write anything (exept exit)." << endl;
-                        cin >> in_exit;
-                        string exit = "exit";   // This if is an atrocity
-                        if (in_exit == exit)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            Sleep(100);
-                        }
+                        cin >> in_exit; string exit = "exit";
+                        if (in_exit == exit) { break; }
+                        else { Sleep(100); }
                     }
                 }
             }
-            else
+            else // wrong password
             {
                 cout << "Wrong password, calling police :)" << endl;
                 Sleep(1000);
                 break;
             }
         }
-        else
+        else // Error
         {
             cout << "Huh?";
             break;
         }
-
     }
-
     return 0;
 }
 
+// This menus are very rought, just to have some fun interface
 int OpeningMenu()
 {
     int menuState = 0;  // variable describing state of the menu: 0 - top, 1 - middle, 2 - bot, 3 - out
-    int accesType = 0;
+    int accesType = 0;  // variable carrying the resoult: 1- guest, 2 - user, 3 - admin
 
-    // Start menu
     system("cls"); // resets the screen
     cout << "Library:" << endl << "[>] Guest" << endl << "[ ] User" << endl << "[ ] Administrator" << endl;
     while (menuState < 3)
@@ -277,21 +217,20 @@ int OpeningMenu()
         }
 
         // Actions
-        if (GetAsyncKeyState(VK_RIGHT)) {
-            switch (menuState) {
-            case 0: // Guest acces
-                menuState = 3;  // will stop the menu loop after completing this instruction
-                //cout << "Guest" << endl;
+        if (GetAsyncKeyState(VK_RIGHT))  // right arrow key becouse enter does not reset properly
+        {
+            switch (menuState)
+            {
+            case 0:
+                menuState = 3;
                 accesType = 1;
                 break;
             case 1:
                 menuState = 3;
-                //cout << "User" << endl;
                 accesType = 2;
                 break;
             case 2:
                 menuState = 3;
-                //cout << "Admin" << endl;
                 accesType = 3;
                 break;
             default:    // incorrect value
@@ -307,20 +246,19 @@ int OpeningMenu()
 
 int UserMenu()
 {
-    int menuState = 0;  // variable describing state of the menu: 0 - top, 1 - middle, 2 - bot, 3 - out
+    int menuState = 0;
     int userActivity = 0;
 
-    // Start menu
     system("cls");
     cout << "[>] Sign in" << endl << "[ ] Create account" << endl;
     while (menuState < 2)
     {
-        if (GetAsyncKeyState(VK_UP))    // if up arrow pressed
+        if (GetAsyncKeyState(VK_UP))
         {
-                system("cls"); // resets the screen
+                system("cls");
                 cout << "[>] Sign in" << endl << "[ ] Create account" << endl;
-                menuState = 0;  // set "cursor" to top
-                Sleep(100); // wait 0.1 seconds, to not get multiple inputs from one press
+                menuState = 0;
+                Sleep(100);
         }
         if (GetAsyncKeyState(VK_DOWN))
         {
@@ -331,20 +269,18 @@ int UserMenu()
         }
 
         // Actions
-        if (GetAsyncKeyState(VK_RIGHT)) // right arrow key becouse enter does not reset properly
+        if (GetAsyncKeyState(VK_RIGHT))
         {
             switch (menuState) {
-            case 0: // Guest acces
-                menuState = 2;  // will stop the menu loop after completing this instruction
-                //cout << "Guest" << endl;
+            case 0:
+                menuState = 2;
                 userActivity = 1;
                 break;
             case 1:
                 menuState = 2;
-                //cout << "User" << endl;
                 userActivity = 2;
                 break;
-            default:    // incorrect value
+            default:
                 cout << "What? How?";
                 break;
             }
@@ -357,20 +293,19 @@ int UserMenu()
 
 int AdminMenu()
 {
-    int menuState = 0;  // variable describing state of the menu: 0 - top, 1 - middle, 2 - bot, 3 - out
+    int menuState = 0;
     int adminActivity = 0;
 
-    // Start menu
     system("cls");
     cout << "[>] Borrowing history" << endl << "[ ] Book's state manager" << endl;
     while (menuState < 2)
     {
-        if (GetAsyncKeyState(VK_UP))    // if up arrow pressed
+        if (GetAsyncKeyState(VK_UP))
         {
-            system("cls"); // resets the screen
+            system("cls");
             cout << "[>] Borrowing history" << endl << "[ ] Book's state manager" << endl;
-            menuState = 0;  // set "cursor" to top
-            Sleep(100); // wait 0.1 seconds, to not get multiple inputs from one press
+            menuState = 0;
+            Sleep(100);
         }
         if (GetAsyncKeyState(VK_DOWN))
         {
@@ -381,17 +316,15 @@ int AdminMenu()
         }
 
         // Actions
-        if (GetAsyncKeyState(VK_RIGHT)) // right arrow key becouse enter does not reset properly
+        if (GetAsyncKeyState(VK_RIGHT))
         {
             switch (menuState) {
-            case 0: // Guest acces
-                menuState = 3;  // will stop the menu loop after completing this instruction
-                //cout << "Guest" << endl;
+            case 0:
+                menuState = 3;
                 adminActivity = 1;
                 break;
             case 1:
                 menuState = 3;
-                //cout << "User" << endl;
                 adminActivity = 2;
                 break;
             default:    // incorrect value

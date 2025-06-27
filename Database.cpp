@@ -1,15 +1,15 @@
-#include <iostream>  // input/output
-//#include <fstream>   // external files support
-#include <string>   // string variable support
-#include <vector>    // vector
-//#include <map>       // map
-using namespace std; // saves the "std::" clutter
+#include <iostream>		// input/output
+#include <string>		// string variable support
+#include <vector>		// vector support
+#include <Windows.h>	// acceses Windows API
+#include <cstdlib>		// several general purpose functions
+using namespace std;	// removes the requairement for "std::" clutter
 
+#include "Book.h"
 #include "Database.h"
 
 void Database::add(Book* in_Book)
 {
-	//cout << "Added" << endl; // test
 	Books.push_back(in_Book);
 }
 
@@ -24,7 +24,7 @@ void Database::getAll()
 			B->getAll();
 		}
 	}
-	cout << endl << "Borrowed books:" << endl;
+	cout << endl << "Books unavailable at the moment:" << endl;
 	for (auto B : Books)
 	{
 		if (B->getState() == 0)

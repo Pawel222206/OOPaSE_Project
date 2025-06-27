@@ -1,20 +1,18 @@
 #pragma once
 
-#include <iostream>  // input/output
-//#include <fstream>   // external files support
-//#include <string>    // string
-#include <vector>	// vector variable support 
-//#include <map>       // map
-using namespace std; // saves the "std::" clutter
+#include <iostream>		// input/output
+#include <string>		// string variable support
+#include <vector>		// vector support
+#include <Windows.h>	// acceses Windows API
+#include <cstdlib>		// several general purpose functions
+using namespace std;	// removes the requairement for "std::" clutter
 
 #include "Book.h"
-#include "Account.h"
 
 class Database : public Book	// Composite Pattern
 {
 private:
 	vector<Book*> Books;
-	vector<Account*> Accounts;
 
 public:
 	void add(Book* in_Book);
@@ -25,15 +23,11 @@ public:
 
 	void borrowBook_B(string in_code);
 
-	~Database()	// should be in .cpp but for some reason just doesn't want to connect :)
+	~Database()	// Should be in .cpp but for some reason just doesn't want to connect :)
 	{
 		for (auto B : Books)
 		{
 			delete B;
-		}
-		for (auto A : Accounts)
-		{
-			delete A;
 		}
 	}
 };

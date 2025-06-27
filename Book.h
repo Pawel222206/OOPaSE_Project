@@ -1,11 +1,11 @@
 #pragma once
 
-#include <iostream>  // input/output
-//#include <fstream>   // external files support
-#include <string>   // string variable support
-//#include <vector>    // vector
-//#include <map>       // map
-using namespace std; // saves the "std::" clutter
+#include <iostream>		// input/output
+#include <string>		// string variable support
+#include <vector>		// vector support
+#include <Windows.h>	// acceses Windows API
+#include <cstdlib>		// several general purpose functions
+using namespace std;	// removes the requairement for "std::" clutter
 
 class Book
 {
@@ -37,6 +37,6 @@ public: // all methods are set as private for now
 
     virtual void updateState(string in_code);
 
-    ~Book();
+    ~Book();    // destructor
 };
 
